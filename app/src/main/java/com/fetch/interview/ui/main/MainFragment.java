@@ -123,16 +123,20 @@ public class MainFragment extends Fragment {
             for (int i = 0; i < fOb.length; i++) {
                 fetchObject f = fOb[i];
                 {
-                    if (f.getName() == "") {
-                        System.out.println("ignoring nameless object at " + i);
+                    if (f.getName() == "" || f.getName() == null) {
+                        System.out.println("ignoring nameless object at index " + i);
 
                     }
                     else {
                         filteredList.add(f);
                     }
-
+                    int len = filteredList.size();
+                    System.out.println("begin sort");
+                    //TODO sort
                 }
             }
+
+
 
 
         }
@@ -145,12 +149,5 @@ public class MainFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-    }
-    protected class jsonString {
-        String[] jsonString;
-
-    public String[] getJsonString() {
-        return jsonString;
-    }
     }
 }

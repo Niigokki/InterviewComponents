@@ -1,6 +1,8 @@
 package com.fetch.interview;
 
-public class fetchObject {
+import java.util.Comparator;
+
+public class fetchObject implements Comparator {
     private int listID;
     private String name;
     private int id;
@@ -38,4 +40,9 @@ public class fetchObject {
     }
 
 
+    @Override
+    public int compare(Object o, Object t1) {
+
+        return 0;
+    }
 }
