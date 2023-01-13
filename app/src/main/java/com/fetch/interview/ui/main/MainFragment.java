@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Debug;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ import com.google.gson.stream.JsonReader;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Objects;
 import java.util.concurrent.*;
 
 import java.io.IOException;
@@ -36,6 +39,10 @@ import java.util.List;
 public class MainFragment extends Fragment {
 
     private MainViewModel mViewModel;
+    private ArrayList<fetchObject> fo1 = new ArrayList();
+    private ArrayList<fetchObject> fo2 = new ArrayList();;
+    private ArrayList<fetchObject> fo3 = new ArrayList();;
+    private ArrayList<fetchObject> fo4 = new ArrayList();;
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -44,6 +51,8 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //frags wait for no one now apparently.
+        //Debug.waitForDebugger();
         mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         // TODO: Use the ViewModel
         //using another thread for networking, asyncTask has been deprecated for years,
@@ -114,29 +123,29 @@ public class MainFragment extends Fragment {
             JsonReader reader = new JsonReader(testISR);
 
             while (reader.hasNext()) {
-                 fOb = (gson.fromJson(reader, fetchObject[].class));
-                 //System.out.println("" + fOb);
-                 //listIDs.add(fOb);
+                fOb = (gson.fromJson(reader, fetchObject[].class));
+                //System.out.println("" + fOb);
+                //listIDs.add(fOb);
             }
             reader.close();
             System.out.println("reader closed, object array generated");
+
             for (int i = 0; i < fOb.length; i++) {
                 fetchObject f = fOb[i];
                 {
-                    if (f.getName() == "" || f.getName() == null) {
+                    if (Objects.equals(f.getName(), "") || f.getName() == null) {
                         System.out.println("ignoring nameless object at index " + i);
 
                     }
                     else {
                         filteredList.add(f);
+                        System.out.println(filteredList.size());
                     }
-                    int len = filteredList.size();
-                    System.out.println("begin sort");
-                    //TODO sort
                 }
+
             }
-
-
+            System.out.print("sanitization finished, sorting now");
+            sortByListIDS(filteredList);
 
 
         }
@@ -150,4 +159,33 @@ public class MainFragment extends Fragment {
             }
         }
     }
+    public int sortByListIDS(@NonNull ArrayList<fetchObject> list) {
+        int j = 0;
+        while (j < list.size()) {
+            fetchObject f1 = list.get(j);
+            if (f1.getListID() ==1) {
+                System.out.println("adding entry at " + j + " to list one");
+                fo1.add(f1);
+
+            }
+            else if (f1.getListID() == 2) {
+                System.out.println("adding entry at " + j + " to list two");
+                fo2.add(f1);
+            }
+            else if (f1.getListID() == 3) {
+                System.out.println("adding entry at " + j + " to list three");
+                fo3.add(f1);
+            }
+            else if (f1.getListID() == 4) {
+                System.out.println("adding entry at " + j + " to list four");
+
+                fo4.add(f1);
+            }
+            j++;
+            //fetchObject f02 = list.get(j);
+            //compare(fo1, f02);
+        }
+        return 0;
+    }
+
 }

@@ -6,12 +6,12 @@
         <type value="RUNNING_DEVICE_TARGET" />
         <deviceKey>
           <Key>
-            <type value="SERIAL_NUMBER" />
-            <value value="LMG710TM49bd8c47" />
+            <type value="VIRTUAL_DEVICE_PATH" />
+            <value value="C:\Users\minak\.android\avd\Pixel_2_API_30.avd" />
           </Key>
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-01-13T00:15:59.208288500Z" />
+    <timeTargetWasSelectedWithDropDown value="2023-01-13T21:23:05.278814800Z" />
   </component>
 </project>

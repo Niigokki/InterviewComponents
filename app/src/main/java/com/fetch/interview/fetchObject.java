@@ -1,11 +1,14 @@
 package com.fetch.interview;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
-public class fetchObject implements Comparator {
-    private int listID;
+public class fetchObject  {
+    private int listId;
     private String name;
     private int id;
+
+
 
 
     public String getName() {
@@ -26,23 +29,26 @@ public class fetchObject implements Comparator {
     }
 
     public int getListID() {
-        return listID;
+        return listId;
     }
 
     public void setListID(int listID) {
-        this.listID = listID;
+        this.listId = listID;
     }
 
     public fetchObject() {
-        this.listID = 0;
+        this.listId = 0;
         this.name = "";
         this.id = 0;
     }
 
 
-    @Override
-    public int compare(Object o, Object t1) {
+
+    public int compare(fetchObject fo1, fetchObject f02) {
 
         return 0;
     }
+
+
+
 }
