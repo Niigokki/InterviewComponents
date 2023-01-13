@@ -1,8 +1,6 @@
 package com.fetch.interview;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.*;
-import androidx.cardview.widget.CardView;
 
 import android.os.Bundle;
 
@@ -12,10 +10,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-import org.json.JSONArray;
-
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,16 +19,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
+         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, MainFragment.newInstance())
                     .commitNow();
+            //new jsonParser().getJSONasArray();
 
         }
+
     }
     @Override
     protected void onStart () {
         super.onStart();
+        //setContentView(R.layout.activity_main);
+
     }
     @Override
     protected void onStop () {
@@ -41,29 +41,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        //setContentView(R.layout.activity_main);
     }
 
     
-    protected class jsonParser {
-        String link = "https://fetch-hiring.s3.amazonaws.com/hiring.json";
-        Gson gson = new Gson();
-        ArrayList listIDs = new ArrayList<fetchObject>();
 
-        protected void getJSONasArray() {
-            JsonArray jsonArray = JsonParser.parseString(gson.fromJson(link, String.class)).getAsJsonArray();
-            int arrLen = jsonArray.size();
-            for (int i = 0; i <= arrLen; i++) {
-                System.out.println("testing for loop");
-                fetchObject temp = new fetchObject();
-                JsonElement element = jsonArray.get(i);
-                
-            }
-        }
 
         }
 
 
 
-    }
+
 
 
