@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 public class RecyclerAdapter extends RecyclerView.ViewHolder {
     protected Context con;
+    private fetchObject[] dataSet;
     public RecyclerAdapter(@NonNull View itemView, ArrayList<fetchObject> array)
     {
         super(itemView);

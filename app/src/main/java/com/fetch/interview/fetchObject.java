@@ -44,7 +44,7 @@ public class fetchObject  {
 
 
 
-    public int compare(fetchObject fo1, fetchObject f02) {
+    public int compare(ArrayList<fetchObject> fetchObjects) {
 
         return 0;
     }

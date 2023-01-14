@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Debug;
 import android.view.LayoutInflater;
@@ -16,14 +17,9 @@ import android.view.ViewGroup;
 import com.fetch.interview.R;
 import com.fetch.interview.fetchObject;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
-import java.lang.reflect.Array;
-import java.util.Collection;
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.*;
 
@@ -34,16 +30,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainFragment extends Fragment {
 
     private MainViewModel mViewModel;
+    RecyclerView fraglistview;
     private ArrayList<fetchObject> fo1 = new ArrayList();
     private ArrayList<fetchObject> fo2 = new ArrayList();;
     private ArrayList<fetchObject> fo3 = new ArrayList();;
     private ArrayList<fetchObject> fo4 = new ArrayList();;
-
+    //private fetchObject[] aux;
     public static MainFragment newInstance() {
         return new MainFragment();
     }
@@ -52,7 +48,7 @@ public class MainFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //frags wait for no one now apparently.
-        //Debug.waitForDebugger();
+        Debug.waitForDebugger();
         mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         // TODO: Use the ViewModel
         //using another thread for networking, asyncTask has been deprecated for years,
@@ -66,6 +62,7 @@ public class MainFragment extends Fragment {
             e.printStackTrace();
         }
         thread.execute(jsonParser);
+        //fraglistview = fraglistview.findViewById(R.id.listview);
 
     }
 
@@ -144,8 +141,17 @@ public class MainFragment extends Fragment {
                 }
 
             }
+
+
             System.out.print("sanitization finished, sorting now");
-            sortByListIDS(filteredList);
+            fetchObject[] testArray = new fetchObject[0];
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                testArray = (filteredList.toArray(fetchObject[]::new));
+            }
+            else {
+                testArray = filteredList.toArray(new fetchObject[10]);
+            }
+            sortByListIDS(testArray);
 
 
         }
@@ -159,9 +165,11 @@ public class MainFragment extends Fragment {
             }
         }
     }
-    public int sortByListIDS(@NonNull ArrayList<fetchObject> list) {
+    public int sortByListIDS(@NonNull fetchObject[] list) {
         int j = 0;
-        while (j < list.size()) {
+
+        mergesort(list);
+        /*while (j < list.size()) {
             fetchObject f1 = list.get(j);
             if (f1.getListID() ==1) {
                 System.out.println("adding entry at " + j + " to list one");
@@ -185,7 +193,69 @@ public class MainFragment extends Fragment {
             //fetchObject f02 = list.get(j);
             //compare(fo1, f02);
         }
+        */
+        System.out.println("combined/sorting by list id complete");
         return 0;
+    }
+    public int sortByName(@NonNull ArrayList<fetchObject> list) {
+            //fo1.sort();
+        int len = list.size();
+        int start = 0;
+        int mid = start + (len - start)/2;
+        return 0;
+    }
+
+
+    private boolean less(@NonNull fetchObject x, fetchObject y) {
+
+       if(x.getName().compareTo(y.getName()) < 0) {
+            return true;
+       }
+       else if (x.getName().compareTo(y.getName()) >= 0) {
+           return false;
+       }
+       else {
+           return false;
+
+       }
+    }
+    public void mergesort(fetchObject[] a) {
+        fetchObject[] aux = Arrays.copyOf(a, a.length);
+        Arrays.fill(aux, null);
+        msort(a, aux, 0, a.length - 1);
+        Arrays.fill(aux, null);
+    }
+
+    /** Sorts a[lo..hi] into ascending order using the recursive mergesort algorithm. */
+    private void msort(fetchObject[] a, fetchObject[] aux, int lo, int hi) {
+        if (hi == lo) {
+            return;
+        }
+        int mid = lo + (hi - lo) / 2;
+        msort(a,aux,  lo, mid);
+        msort(a, aux, mid + 1, hi);
+        merge(a, aux,  lo, mid, hi);
+    }
+
+    private void merge(fetchObject[] a, fetchObject[] aux, int lo, int mid, int hi) {
+        for (int k = lo; k <= hi; k++) {
+            aux[k] = a[k];
+        }
+
+        int i = lo;
+        int j = mid + 1;
+        for (int k = lo; k <= hi; k++) {
+            if (i > mid) {
+                a[k] = aux[j++];
+            } else if (j > hi) {
+                a[k] = aux[i++];
+            } else if (less(aux[j], aux[i])) {
+                a[k] = aux[j++];
+            }
+            else {
+                a[k] = aux[i++];
+            }
+        }
     }
 
 }
