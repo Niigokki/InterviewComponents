@@ -113,20 +113,24 @@ public class MainFragment extends Fragment {
         protected void getJSONasArray() throws IOException {
             //JsonReader.setLenient(true);
             System.out.println("begin parsing");
-            URLConnection connection = url.openConnection();
-            iS = connection.getInputStream();
-            System.out.println("Connection Successful!");
-            InputStreamReader testISR = new InputStreamReader(iS);
-            JsonReader reader = new JsonReader(testISR);
+            try {
+                URLConnection connection = url.openConnection();
+                iS = connection.getInputStream();
+                System.out.println("Connection Successful!");
+                InputStreamReader testISR = new InputStreamReader(iS);
+                JsonReader reader = new JsonReader(testISR);
 
-            while (reader.hasNext()) {
-                fOb = (gson.fromJson(reader, fetchObject[].class));
-                //System.out.println("" + fOb);
-                //listIDs.add(fOb);
+                while (reader.hasNext()) {
+                    fOb = (gson.fromJson(reader, fetchObject[].class));
+                    //System.out.println("" + fOb);
+                    //listIDs.add(fOb);
+                }
+                reader.close();
+                System.out.println("reader closed, object array generated");
             }
-            reader.close();
-            System.out.println("reader closed, object array generated");
+            catch (IOException e) {
 
+            }
             for (int i = 0; i < fOb.length; i++) {
                 fetchObject f = fOb[i];
                 {
@@ -166,78 +170,54 @@ public class MainFragment extends Fragment {
         }
     }
     public int sortByListIDS(@NonNull fetchObject[] list) {
-        int j = 0;
+        mergesort(list, true);
+        System.out.println("sorting by name complete");
+        mergesort(list, false);
+        System.out.println("sorting by listID complete");
 
-        mergesort(list);
-        /*while (j < list.size()) {
-            fetchObject f1 = list.get(j);
-            if (f1.getListID() ==1) {
-                System.out.println("adding entry at " + j + " to list one");
-                fo1.add(f1);
+        return 0;
+    }
+
+
+    private boolean less(@NonNull fetchObject x, fetchObject y, boolean whichSort) {
+        if (whichSort == true) {
+            if ((x.getName().compareTo(y.getName()) < 0)) {
+                return true;
+            } else if (x.getName().compareTo(y.getName()) >= 0) {
+                return false;
+            }
+        } else if (whichSort == false) {
+
+            if ((x.getListID() < y.getListID())) {
+                return true;
+            } else if (x.getListID() >= y.getListID()) {
+                return false;
 
             }
-            else if (f1.getListID() == 2) {
-                System.out.println("adding entry at " + j + " to list two");
-                fo2.add(f1);
-            }
-            else if (f1.getListID() == 3) {
-                System.out.println("adding entry at " + j + " to list three");
-                fo3.add(f1);
-            }
-            else if (f1.getListID() == 4) {
-                System.out.println("adding entry at " + j + " to list four");
-
-                fo4.add(f1);
-            }
-            j++;
-            //fetchObject f02 = list.get(j);
-            //compare(fo1, f02);
         }
-        */
-        System.out.println("combined/sorting by list id complete");
-        return 0;
-    }
-    public int sortByName(@NonNull ArrayList<fetchObject> list) {
-            //fo1.sort();
-        int len = list.size();
-        int start = 0;
-        int mid = start + (len - start)/2;
-        return 0;
+        return false;
     }
 
 
-    private boolean less(@NonNull fetchObject x, fetchObject y) {
-
-       if(x.getName().compareTo(y.getName()) < 0) {
-            return true;
-       }
-       else if (x.getName().compareTo(y.getName()) >= 0) {
-           return false;
-       }
-       else {
-           return false;
-
-       }
-    }
-    public void mergesort(fetchObject[] a) {
+    public void mergesort(fetchObject[] a, boolean whichSort) {
         fetchObject[] aux = Arrays.copyOf(a, a.length);
         Arrays.fill(aux, null);
-        msort(a, aux, 0, a.length - 1);
+        msort(a, aux, 0, a.length - 1, whichSort);
         Arrays.fill(aux, null);
     }
 
     /** Sorts a[lo..hi] into ascending order using the recursive mergesort algorithm. */
-    private void msort(fetchObject[] a, fetchObject[] aux, int lo, int hi) {
+    private void msort(fetchObject[] a, fetchObject[] aux, int lo, int hi, boolean whichSort) {
         if (hi == lo) {
             return;
         }
         int mid = lo + (hi - lo) / 2;
-        msort(a,aux,  lo, mid);
-        msort(a, aux, mid + 1, hi);
-        merge(a, aux,  lo, mid, hi);
+        msort(a,aux,  lo, mid, whichSort);
+        msort(a, aux, mid + 1, hi, whichSort);
+        merge(a, aux,  lo, mid, hi, whichSort);
     }
 
-    private void merge(fetchObject[] a, fetchObject[] aux, int lo, int mid, int hi) {
+    private void merge(fetchObject[] a, fetchObject[] aux, int lo, int mid, int hi, boolean whichSort) {
         for (int k = lo; k <= hi; k++) {
             aux[k] = a[k];
         }
@@ -249,7 +229,7 @@ public class MainFragment extends Fragment {
                 a[k] = aux[j++];
             } else if (j > hi) {
                 a[k] = aux[i++];
-            } else if (less(aux[j], aux[i])) {
+            } else if (less(aux[j], aux[i], whichSort)) {
                 a[k] = aux[j++];
             }
             else {
