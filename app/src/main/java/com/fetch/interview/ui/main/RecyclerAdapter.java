@@ -15,16 +15,12 @@ import com.fetch.interview.R;
 import com.fetch.interview.fetchObject;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.CustomViewHolder> {
-    //protected Context con;
     private fetchObject[] dataSet;
-    RecyclerView mRecyclerView;
     Context context;
 
     public RecyclerAdapter(fetchObject[] dataSetFromJSON, Context context) {
         dataSet = dataSetFromJSON;
         this.context = context;
-        //notifyDataSetChanged();
-
     }
 
     @NonNull
@@ -44,11 +40,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Custom
     public int getItemCount() {
         return dataSet.length;
     }
-    public void setupView() {
-        //mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
-    }
-
 
     protected class CustomViewHolder extends RecyclerView.ViewHolder {
         protected TextView listID;

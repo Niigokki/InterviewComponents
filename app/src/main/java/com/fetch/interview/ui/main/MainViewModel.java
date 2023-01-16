@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MainViewModel extends ViewModel {
     private MutableLiveData<List<fetchObject>> jsonCache;
-
+    //TODO bring over json parser, clean it
 
     public LiveData<List<fetchObject>> getObjects() {
         if (jsonCache == null){
@@ -21,6 +21,7 @@ public class MainViewModel extends ViewModel {
     }
     private void loadfromCache()
     {   //cache loading code goes here
+        //including placeholder
 
     }
 }

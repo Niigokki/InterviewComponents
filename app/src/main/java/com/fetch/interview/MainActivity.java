@@ -1,27 +1,18 @@
 package com.fetch.interview;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.concurrent.*;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Debug;
 import android.widget.ProgressBar;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.fetch.interview.ui.main.MainFragment;
 import com.fetch.interview.ui.main.RecyclerAdapter;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-
-import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,38 +22,40 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
 
+/**
+ * written by Morgan Caelyn Smith
+ * morgan.k.kaine@gmail.com
+ */
 public class MainActivity extends AppCompatActivity {
-        private RecyclerView recyclerView;
-        private RecyclerAdapter customAdapter;
-        private Context context;
-        private ProgressBar pB;
-        private fetchObject[] aux;
+    private RecyclerView recyclerView;
+    private RecyclerAdapter customAdapter;
+    /**
+     * The context is actually used so I don't understand why AS is catching it in the lint.
+     */
+    private Context context;
+    private ProgressBar pB;
+    private fetchObject[] aux;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-         //Debug.waitForDebugger();
+        //Debug.waitForDebugger();
         context = getBaseContext();
         setContentView(R.layout.fragment_main);
-         if (savedInstanceState == null) {
+        if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, MainFragment.newInstance())
                     .commitNow();
-
-
-            //new jsonParser().getJSONasArray();
-
         }
 
-        //TODO: Use the ViewModel
-        //TPTE < asynctask
-        //it's a little messy, but it shouldn't leak memory like asyncTask
-        //thread = new ThreadPerTaskExecutor();
-        Runnable jsonParser = null;
-        //Runnable setupList = null;
+          /** TODO: see about migrating this block to the viewmodel if possible
+          * TPTE < asynctask
+          * *it's a little messy, but it shouldn't leak memory like asyncTask
+          * thread = new ThreadPerTaskExecutor();
+          * Runnable setupList = null;
+          */
+         Runnable jsonParser = null;
 
         try {
             jsonParser = new jsonParser();
@@ -71,35 +64,41 @@ public class MainActivity extends AppCompatActivity {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-            Thread thread = new Thread(jsonParser);
-            thread.start();
-            while (thread.isAlive()) {
-                System.out.println("waiting......");
-            }
-            System.out.println("done!");
-            setupViews(aux);
-
-            //all code hereafter is on the first thread, except for parsing and so on.
-
-
-
+        Thread thread = new Thread(jsonParser);
+        thread.start();
+        while (thread.isAlive()) {
+            System.out.println("waiting......");
+            /**I know that UI thread shouldn't really have to wait like this, but I was having
+            //issues getting everything to pass back to the original activity from the frag.
+            //for the scope of this problem it's fine, and mergesort plus the input
+            //sanitization picks up a lot of slack.
+             */
+        }
+        System.out.println("done!");
+        setupViews(aux);
 
     }
+
     @Override
-    protected void onStart () {
+    protected void onStart() {
         super.onStart();
-        //setContentView(R.layout.activity_main);
-
     }
+
     @Override
-    protected void onStop () {
+    protected void onStop() {
         super.onStop();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
-        //setContentView(R.layout.activity_main);
     }
+    /**
+     * this function was easier to write than I'd anticipated honestly.
+     * I left my commandline prints in this function, they do a nice job explaining my thought
+     * process. GSON is supposedly one of the slower parsers now, so this could be optimized further
+     * with a little refactoring to another lib.
+     */
     protected class jsonParser implements Runnable {
         URL url = new URL("https://fetch-hiring.s3.amazonaws.com/hiring.json");
         Gson gson = new Gson();
@@ -116,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 URLConnection connection = url.openConnection();
                 iS = connection.getInputStream();
-                System.out.println("Connection Successful!");
+                //System.out.println("Connection Successful!");
                 InputStreamReader testISR = new InputStreamReader(iS);
                 JsonReader reader = new JsonReader(testISR);
 
@@ -129,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 //System.out.println("reader closed, object array generated");
             } catch (IOException e) {
                 //code for loading cached version goes here
-                //as well as fallback function/data
+                //as well as fallback function/default data
             }
             //JSON Sanitization step
             for (int i = 0; i < fOb.length; i++) {
@@ -157,8 +156,6 @@ public class MainActivity extends AppCompatActivity {
                 testArray = filteredList.toArray(new fetchObject[10]);
             }
             aux = sortByListIDS(testArray);
-            //RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.listview);
-
 
         }
 
@@ -174,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public fetchObject[] sortByListIDS(@NonNull fetchObject[] list)  {
+    public fetchObject[] sortByListIDS(@NonNull fetchObject[] list) {
         //sortbyName var adjusts if we sort by name or list id
         //true = name, false = listid
         mergesort(list, true);
@@ -182,10 +179,14 @@ public class MainActivity extends AppCompatActivity {
         mergesort(list, false);
         //System.out.println("sorting by listID complete");
         //new setupList();
-         return list;
+        return list;
 
     }
 
+    /**
+     * simply sets up all the recyclerview stuff
+     * @param objects - the sorted array must be passed to this function to not have a null error
+     */
     private void setupViews(fetchObject[] objects) {
         recyclerView = (RecyclerView) findViewById(R.id.listview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -195,27 +196,30 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * this function is the only part of the mergesort that requires tweaking for additional
+     * attributes.
+     */
     private boolean less(@NonNull fetchObject x, fetchObject y, boolean sortbyName) {
-        if (sortbyName == true) {
+        if (sortbyName) {
             if ((x.getName().compareTo(y.getName()) < 0)) {
                 return true;
             } else if (x.getName().compareTo(y.getName()) >= 0) {
                 return false;
             }
         } else if (sortbyName == false) {
-
             if ((x.getListID() < y.getListID())) {
                 return true;
             } else if (x.getListID() >= y.getListID()) {
                 return false;
-
             }
         }
         return false;
     }
-
-
+    /**
+     * this function handles the overhead for merge sort - managing and cleaning the temp array,
+     * as well as passing the result back to a place it can be used by the ui thread
+     */
     public void mergesort(fetchObject[] a, boolean sortbyName) {
         aux = Arrays.copyOf(a, a.length);
         Arrays.fill(aux, null);
@@ -225,7 +229,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Sorts a[lo..hi] into ascending order using the recursive mergesort algorithm.
+     * sorts a[lo..hi] into ascending order using the recursive mergesort algorithm.
+     *
      */
     private void msort(fetchObject[] a, fetchObject[] aux, int lo, int hi, boolean sortbyName) {
         if (hi == lo) {
@@ -236,12 +241,13 @@ public class MainActivity extends AppCompatActivity {
         msort(a, aux, mid + 1, hi, sortbyName);
         merge(a, aux, lo, mid, hi, sortbyName);
     }
-
+    /**
+     * the meat of the merge function, this is where all the actual comparisons take place.
+     */
     private void merge(fetchObject[] a, fetchObject[] aux, int lo, int mid, int hi, boolean sortbyName) {
         for (int k = lo; k <= hi; k++) {
             aux[k] = a[k];
         }
-
         int i = lo;
         int j = mid + 1;
         for (int k = lo; k <= hi; k++) {
@@ -258,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    }
+}
 
 
 

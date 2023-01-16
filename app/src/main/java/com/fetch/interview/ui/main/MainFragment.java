@@ -1,47 +1,21 @@
 package com.fetch.interview.ui.main;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Debug;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.fetch.interview.MainActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.fetch.interview.R;
-import com.fetch.interview.fetchObject;
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-
-import org.json.JSONException;
-
-import java.util.Arrays;
-import java.util.Objects;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
 
 public class MainFragment extends Fragment {
 
     private MainViewModel mViewModel;
-    //RecyclerView fraglistview;
-    //public RecyclerAdapter customAdapter;
-    //ViewGroup container = newInstance().container;
-    //public fetchObject[] aux = new fetchObject[5000];
-    //public fetchObject placeholder = new fetchObject();
+
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -52,13 +26,8 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
         //frags wait for no one now apparently.
         //debug line only
-       // Debug.waitForDebugger();
+        // Debug.waitForDebugger();
         mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        //fraglistview.setAdapter(new RecyclerAdapter(aux));
-        //thread.execute(setupList);
-
-
-
     }
 
 
@@ -94,9 +63,5 @@ public class MainFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
     }
-
-
-
-
 
 }

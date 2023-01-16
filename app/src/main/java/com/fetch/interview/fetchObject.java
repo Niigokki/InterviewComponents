@@ -1,15 +1,23 @@
 package com.fetch.interview;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
-public class fetchObject  {
+/**
+ * simple data structure for parsing our JSON feed.
+ * written by Morgan Caelynn Smith.
+ */
+
+public class fetchObject {
     private int listId;
     private String name;
     private int id;
 
 
-
+    public fetchObject() {
+        this.listId = 0;
+        this.name = "";
+        this.id = 0;
+    }
 
     public String getName() {
         return name;
@@ -18,7 +26,6 @@ public class fetchObject  {
     public void setName(String name) {
         this.name = name;
     }
-
 
     public int getId() {
         return id;
@@ -36,19 +43,10 @@ public class fetchObject  {
         this.listId = listID;
     }
 
-    public fetchObject() {
-        this.listId = 0;
-        this.name = "";
-        this.id = 0;
-    }
-
-
-
     public int compare(ArrayList<fetchObject> fetchObjects) {
 
         return 0;
     }
-
 
 
 }
