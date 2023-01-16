@@ -1,27 +1,51 @@
 package com.fetch.interview.ui.main;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fetch.interview.MainActivity;
 import com.fetch.interview.R;
 import com.fetch.interview.fetchObject;
 
-import java.util.ArrayList;
-
-public class RecyclerAdapter extends RecyclerView.ViewHolder {
-    protected Context con;
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.CustomViewHolder> {
+    //protected Context con;
     private fetchObject[] dataSet;
-    public RecyclerAdapter(@NonNull View itemView, ArrayList<fetchObject> array)
-    {
-        super(itemView);
+    RecyclerView mRecyclerView;
+
+    public RecyclerAdapter(fetchObject[] dataSetFromJSON) {
+        dataSet = dataSetFromJSON;
+        notifyDataSetChanged();
+
     }
+
+    @NonNull
+    @Override
+    public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item_template, parent, false);
+        return new CustomViewHolder(view);
+    }
+
+    public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
+        holder.listID.setText(dataSet[position].getListID());
+        holder.ID.setText(dataSet[position].getId());
+        holder.name.setText(dataSet[position].getName());
+    }
+
+    @Override
+    public int getItemCount() {
+        return dataSet.length;
+    }
+    public void setupView() {
+        //mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
+    }
+
 
     protected class CustomViewHolder extends RecyclerView.ViewHolder {
         protected TextView listID;
@@ -36,10 +60,19 @@ public class RecyclerAdapter extends RecyclerView.ViewHolder {
             this.name = (TextView) itemView.findViewById(R.id.name);
 
         }
-        public CustomViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_item_template, viewGroup, false);
-            CustomViewHolder viewHolder = new CustomViewHolder(view);
-            return viewHolder;
+        public TextView getListID() {
+            return listID;
         }
+        public TextView getID() {
+            return ID;
+        }
+        public TextView getName() {
+            return name;
+        }
+        public int getItemCount() {
+            return dataSet.length;
+        }
+
     }
+
 }

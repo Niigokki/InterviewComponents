@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Debug;
@@ -14,10 +15,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fetch.interview.MainActivity;
 import com.fetch.interview.R;
 import com.fetch.interview.fetchObject;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+
+import org.json.JSONException;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -35,15 +39,12 @@ public class MainFragment extends Fragment {
 
     private MainViewModel mViewModel;
     RecyclerView fraglistview;
-    private ArrayList<fetchObject> fo1 = new ArrayList();
-    private ArrayList<fetchObject> fo2 = new ArrayList();
-    ;
-    private ArrayList<fetchObject> fo3 = new ArrayList();
-    ;
-    private ArrayList<fetchObject> fo4 = new ArrayList();
-    ;
+    public RecyclerAdapter customAdapter;
+    //ViewGroup container = newInstance().container;
+    public fetchObject[] aux = new fetchObject[5000];
+    public fetchObject placeholder = new fetchObject();
+    ThreadPerTaskExecutor thread;
 
-    //private fetchObject[] aux;
     public static MainFragment newInstance() {
         return new MainFragment();
     }
@@ -53,23 +54,30 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
         //frags wait for no one now apparently.
         //debug line only
-        //Debug.waitForDebugger();
+       // Debug.waitForDebugger();
         mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
         //TODO: Use the ViewModel
         //TPTE < asynctask
         //it's a little messy, but it shouldn't leak memory like bad implementations of asyncTask
-        //did/do
-        ThreadPerTaskExecutor thread = new ThreadPerTaskExecutor();
+        thread = new ThreadPerTaskExecutor();
         Runnable jsonParser = null;
+        Runnable setupList = null;
         try {
             jsonParser = new jsonParser();
+            //setupList = new setupList();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+        aux[0] = placeholder;
         thread.execute(jsonParser);
-        //fraglistview = fraglistview.findViewById(R.id.listview);
+        fraglistview.setAdapter(new RecyclerAdapter(aux));
+        //thread.execute(setupList);
+
+
 
     }
+
 
 
     @Nullable
@@ -136,27 +144,28 @@ public class MainFragment extends Fragment {
                     //listIDs.add(fOb);
                 }
                 reader.close();
-                System.out.println("reader closed, object array generated");
+                //System.out.println("reader closed, object array generated");
             } catch (IOException e) {
                 //code for loading cached version goes here
                 //as well as fallback function/data
             }
+                //JSON Sanitization step
             for (int i = 0; i < fOb.length; i++) {
                 fetchObject f = fOb[i];
                 {
                     if (Objects.equals(f.getName(), "") || f.getName() == null) {
-                        System.out.println("ignoring nameless object at index " + i);
+                        //System.out.println("ignoring nameless object at index " + i);
 
                     } else {
                         filteredList.add(f);
-                        System.out.println(filteredList.size());
+                        //System.out.println(filteredList.size());
                     }
                 }
 
             }
 
 
-            System.out.print("sanitization finished, sorting now");
+            //System.out.print("sanitization finished, sorting now");
             fetchObject[] testArray = new fetchObject[0];
             //I wanted to use the lamdba function but evidently less than 1% of devices run Tiramisu
             //I should get a tiramisu device
@@ -166,6 +175,7 @@ public class MainFragment extends Fragment {
                 testArray = filteredList.toArray(new fetchObject[10]);
             }
             sortByListIDS(testArray);
+            //RecyclerView rv = (RecyclerView) rootView.findViewById(R.id.listview);
 
 
         }
@@ -180,14 +190,14 @@ public class MainFragment extends Fragment {
         }
     }
 
-    public int sortByListIDS(@NonNull fetchObject[] list) {
+    public int sortByListIDS(@NonNull fetchObject[] list)  {
         //sortbyName var adjusts if we sort by name or list id
         //true = name, false = listid
         mergesort(list, true);
         //System.out.println("sorting by name complete");
         mergesort(list, false);
         //System.out.println("sorting by listID complete");
-
+        //new setupList();
         return 0;
     }
 
@@ -213,10 +223,11 @@ public class MainFragment extends Fragment {
 
 
     public void mergesort(fetchObject[] a, boolean sortbyName) {
-        fetchObject[] aux = Arrays.copyOf(a, a.length);
+        aux = Arrays.copyOf(a, a.length);
         Arrays.fill(aux, null);
         msort(a, aux, 0, a.length - 1, sortbyName);
         Arrays.fill(aux, null);
+        aux = a;
     }
 
     /**

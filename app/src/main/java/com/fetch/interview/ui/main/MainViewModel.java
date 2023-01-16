@@ -1,20 +1,27 @@
 package com.fetch.interview.ui.main;
 
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.fetch.interview.fetchObject;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
-import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainViewModel extends ViewModel {
-    // TODO: Implement the ViewModel
+    private MutableLiveData<List<fetchObject>> jsonCache;
+
+
+    public LiveData<List<fetchObject>> getObjects() {
+        if (jsonCache == null){
+            jsonCache = new MutableLiveData<List<fetchObject>>();
+        }
+        return jsonCache;
     }
+    private void loadfromCache()
+    {   //cache loading code goes here
+
+    }
+}
 
