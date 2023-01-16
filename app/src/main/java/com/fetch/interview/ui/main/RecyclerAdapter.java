@@ -35,9 +35,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Custom
     }
 
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
-        holder.listID.setText(dataSet[position].getListID());
-        holder.ID.setText(dataSet[position].getId());
-        holder.name.setText(dataSet[position].getName());
+        holder.listID.setText(String.valueOf(dataSet[position].getListID()));
+        holder.ID.setText(String.valueOf(dataSet[position].getId()));
+        holder.name.setText(String.valueOf(dataSet[position].getName()));
     }
 
     @Override

@@ -1,31 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="30dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="2dp">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
-    <TextView
-        android:id="@+id/list_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="list id"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/list_id"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"
+
+            android:text="list id" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="left"
             android:text="name"
              />
 
@@ -33,9 +30,9 @@
         android:id="@+id/id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+            android:layout_gravity="right"
         android:text="id"
          />
 
     </androidx.cardview.widget.CardView>
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>
