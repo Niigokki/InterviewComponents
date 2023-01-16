@@ -1,5 +1,6 @@
 package com.fetch.interview.ui.main;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +18,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Custom
     //protected Context con;
     private fetchObject[] dataSet;
     RecyclerView mRecyclerView;
+    Context context;
 
-    public RecyclerAdapter(fetchObject[] dataSetFromJSON) {
+    public RecyclerAdapter(fetchObject[] dataSetFromJSON, Context context) {
         dataSet = dataSetFromJSON;
-        notifyDataSetChanged();
+        this.context = context;
+        //notifyDataSetChanged();
 
     }
 

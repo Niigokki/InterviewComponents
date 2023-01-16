@@ -38,7 +38,7 @@ import java.util.ArrayList;
 public class MainFragment extends Fragment {
 
     private MainViewModel mViewModel;
-    RecyclerView fraglistview;
+    //RecyclerView fraglistview;
     public RecyclerAdapter customAdapter;
     //ViewGroup container = newInstance().container;
     public fetchObject[] aux = new fetchObject[5000];
@@ -71,7 +71,7 @@ public class MainFragment extends Fragment {
         }
         aux[0] = placeholder;
         thread.execute(jsonParser);
-        fraglistview.setAdapter(new RecyclerAdapter(aux));
+        //fraglistview.setAdapter(new RecyclerAdapter(aux));
         //thread.execute(setupList);
 
 

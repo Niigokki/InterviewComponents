@@ -28,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
         private ProgressBar pB;
 
 
-    @SuppressLint("MissingInflatedId")
-    @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getBaseContext();
         setContentView(R.layout.fragment_main);
          if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
