@@ -36,9 +36,13 @@ public class MainFragment extends Fragment {
     private MainViewModel mViewModel;
     RecyclerView fraglistview;
     private ArrayList<fetchObject> fo1 = new ArrayList();
-    private ArrayList<fetchObject> fo2 = new ArrayList();;
-    private ArrayList<fetchObject> fo3 = new ArrayList();;
-    private ArrayList<fetchObject> fo4 = new ArrayList();;
+    private ArrayList<fetchObject> fo2 = new ArrayList();
+    ;
+    private ArrayList<fetchObject> fo3 = new ArrayList();
+    ;
+    private ArrayList<fetchObject> fo4 = new ArrayList();
+    ;
+
     //private fetchObject[] aux;
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -48,12 +52,13 @@ public class MainFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //frags wait for no one now apparently.
-        Debug.waitForDebugger();
+        //debug line only
+        //Debug.waitForDebugger();
         mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        // TODO: Use the ViewModel
-        //using another thread for networking, asyncTask has been deprecated for years,
-        //it's a little messy
-        // TODO: Clean this mess up!
+        //TODO: Use the ViewModel
+        //TPTE < asynctask
+        //it's a little messy, but it shouldn't leak memory like bad implementations of asyncTask
+        //did/do
         ThreadPerTaskExecutor thread = new ThreadPerTaskExecutor();
         Runnable jsonParser = null;
         try {
@@ -73,22 +78,27 @@ public class MainFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
+
     @Override
     public void onStart() {
         super.onStart();
     }
+
     @Override
     public void onStop() {
         super.onStop();
     }
+
     @Override
     public void onResume() {
         super.onResume();
     }
+
     @Override
     public void onPause() {
         super.onPause();
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -112,7 +122,7 @@ public class MainFragment extends Fragment {
 
         protected void getJSONasArray() throws IOException {
             //JsonReader.setLenient(true);
-            System.out.println("begin parsing");
+            //System.out.println("begin parsing");
             try {
                 URLConnection connection = url.openConnection();
                 iS = connection.getInputStream();
@@ -127,9 +137,9 @@ public class MainFragment extends Fragment {
                 }
                 reader.close();
                 System.out.println("reader closed, object array generated");
-            }
-            catch (IOException e) {
-
+            } catch (IOException e) {
+                //code for loading cached version goes here
+                //as well as fallback function/data
             }
             for (int i = 0; i < fOb.length; i++) {
                 fetchObject f = fOb[i];
@@ -137,8 +147,7 @@ public class MainFragment extends Fragment {
                     if (Objects.equals(f.getName(), "") || f.getName() == null) {
                         System.out.println("ignoring nameless object at index " + i);
 
-                    }
-                    else {
+                    } else {
                         filteredList.add(f);
                         System.out.println(filteredList.size());
                     }
@@ -149,10 +158,11 @@ public class MainFragment extends Fragment {
 
             System.out.print("sanitization finished, sorting now");
             fetchObject[] testArray = new fetchObject[0];
+            //I wanted to use the lamdba function but evidently less than 1% of devices run Tiramisu
+            //I should get a tiramisu device
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
                 testArray = (filteredList.toArray(fetchObject[]::new));
-            }
-            else {
+            } else {
                 testArray = filteredList.toArray(new fetchObject[10]);
             }
             sortByListIDS(testArray);
@@ -169,24 +179,27 @@ public class MainFragment extends Fragment {
             }
         }
     }
+
     public int sortByListIDS(@NonNull fetchObject[] list) {
+        //sortbyName var adjusts if we sort by name or list id
+        //true = name, false = listid
         mergesort(list, true);
-        System.out.println("sorting by name complete");
+        //System.out.println("sorting by name complete");
         mergesort(list, false);
-        System.out.println("sorting by listID complete");
+        //System.out.println("sorting by listID complete");
 
         return 0;
     }
 
 
-    private boolean less(@NonNull fetchObject x, fetchObject y, boolean whichSort) {
-        if (whichSort == true) {
+    private boolean less(@NonNull fetchObject x, fetchObject y, boolean sortbyName) {
+        if (sortbyName == true) {
             if ((x.getName().compareTo(y.getName()) < 0)) {
                 return true;
             } else if (x.getName().compareTo(y.getName()) >= 0) {
                 return false;
             }
-        } else if (whichSort == false) {
+        } else if (sortbyName == false) {
 
             if ((x.getListID() < y.getListID())) {
                 return true;
@@ -199,25 +212,27 @@ public class MainFragment extends Fragment {
     }
 
 
-    public void mergesort(fetchObject[] a, boolean whichSort) {
+    public void mergesort(fetchObject[] a, boolean sortbyName) {
         fetchObject[] aux = Arrays.copyOf(a, a.length);
         Arrays.fill(aux, null);
-        msort(a, aux, 0, a.length - 1, whichSort);
+        msort(a, aux, 0, a.length - 1, sortbyName);
         Arrays.fill(aux, null);
     }
 
-    /** Sorts a[lo..hi] into ascending order using the recursive mergesort algorithm. */
-    private void msort(fetchObject[] a, fetchObject[] aux, int lo, int hi, boolean whichSort) {
+    /**
+     * Sorts a[lo..hi] into ascending order using the recursive mergesort algorithm.
+     */
+    private void msort(fetchObject[] a, fetchObject[] aux, int lo, int hi, boolean sortbyName) {
         if (hi == lo) {
             return;
         }
         int mid = lo + (hi - lo) / 2;
-        msort(a,aux,  lo, mid, whichSort);
-        msort(a, aux, mid + 1, hi, whichSort);
-        merge(a, aux,  lo, mid, hi, whichSort);
+        msort(a, aux, lo, mid, sortbyName);
+        msort(a, aux, mid + 1, hi, sortbyName);
+        merge(a, aux, lo, mid, hi, sortbyName);
     }
 
-    private void merge(fetchObject[] a, fetchObject[] aux, int lo, int mid, int hi, boolean whichSort) {
+    private void merge(fetchObject[] a, fetchObject[] aux, int lo, int mid, int hi, boolean sortbyName) {
         for (int k = lo; k <= hi; k++) {
             aux[k] = a[k];
         }
@@ -229,10 +244,9 @@ public class MainFragment extends Fragment {
                 a[k] = aux[j++];
             } else if (j > hi) {
                 a[k] = aux[i++];
-            } else if (less(aux[j], aux[i], whichSort)) {
+            } else if (less(aux[j], aux[i], sortbyName)) {
                 a[k] = aux[j++];
-            }
-            else {
+            } else {
                 a[k] = aux[i++];
             }
         }
